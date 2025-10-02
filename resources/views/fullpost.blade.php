@@ -1,58 +1,125 @@
-<x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            @if (Auth::check() && Auth::user()->usertype == 'admin')
-                {{ __('Admin Dashboard') }}
-            @else
-                {{ __('User Dashboard') }}
-            @endif
-        </h2>
-    </x-slot>
-    @section('content')
-        <div class="py-12">
-            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                    <div class="p-6 text-gray-900">
-                        <!--  all post   -->
-                        <h1 style="color: #333; text-align: center; margin-bottom: 30px;">Posts Management</h1>
+<!DOCTYPE html>
+<html lang="en">
 
-                        <div style="overflow-x: auto;">
-                            <table
-                                style="width: 100%; border-collapse: collapse; background-color: white; box-shadow: 0 0 10px rgba(0,0,0,0.1);">
-                                <thead>
-                                    <tr style="background-color: #4CAF50; color: white;">
-                                        <th style="padding: 12px 15px; text-align: left;">ID</th>
-                                        <th style="padding: 12px 15px; text-align: left;">Title</th>
-                                        <th style="padding: 12px 15px; text-align: left;">Description</th>
-                                        <th style="padding: 12px 15px; text-align: left;">Image</th>
-                                        <th style="padding: 12px 15px; text-align: left;">Actions</th>
-                                        <th style="padding: 12px 15px; text-align: left;">Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach ($post as $posts)
-                                        <tr style="border-bottom: 1px solid #ddd;">
-                                            <td style="padding: 12px 15px;">{{ $posts->id }}</td>
-                                            <td style="padding: 12px 15px;">{{ $posts->title }}</td>
-                                            <td style="padding: 12px 15px;">{{ Str::limit($posts->description, 100) }}</td>
-                                            <td style="padding: 12px 15px;"><img style="width: 100px; height: 100px;"
-                                                    src="{{ asset('img/' . $posts->image) }}" alt="{{ $posts->image }}">
-                                            <td style="padding: 12px 15px;">
-                                                <a href=""
-                                                    style="background-color: #2196F3; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; margin-right: 5px;">Update</a>
-                                            </td>
-                                            <td style="padding: 12px 15px;">
-                                                <a href=""
-                                                    style="background-color: #f44336; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer;">Delete</a>
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laravel Blog - Home</title>
+    <link rel="stylesheet" href="{{ asset('homestyle.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <nav class="navbar">
+                <a href="/" class="logo">Lara<span>Blog</span></a>
+                <div class="nav-links">
+                    <a href="{{ route('home') }}" class="active">Home</a>
+                    <a href="">Blog</a>
+                    <a href="">About</a>
+                    <a href="">Contact</a>
+                    @if (Route::has('login'))
+                        @auth
+                            <a href="{{ route('dashboard') }}"
+                                class="inline-block px-5 py-1.5 dark:text-[#EDEDEC] border-[#19140035] hover:border-[#1915014a] border text-[#1b1b18] dark:border-[#3E3E3A] dark:hover:border-[#62605b] rounded-sm text-sm leading-normal">
+                                Dashboard
+                            </a>
+                        @else
+                            <a href="{{ route('login') }}">Login</a>
+                        @endauth
+                    @endif
                 </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h1>Welcome to LaraBlog</h1>
+            <p>Discover amazing articles, tutorials, and insights about web development, Laravel, and modern PHP
+                practices.</p>
+            <a href="/blog" class="btn btn-primary">Browse Articles</a>
+        </div>
+    </section>
+
+    <!-- Featured Posts -->
+    <div class="container">
+        <h2 class="section-title">Featured Posts</h2>
+        <div class="featured-posts">
+            <div class="post-content">
+                <h3 class="post-title">{{ $post->title }}</h3>
+                <div class="post-image">
+                    <img src="{{ asset('uploads/' . $post->image) }}" alt="{{ $post->title }}">
+                </div>
+                <div class="post-meta">
+                    <span>{{ $post->published_at }}</span>
+                </div>
+                <p class="post-excerpt">{!! $post->content !!}</p>
             </div>
         </div>
-    @endsection
-</x-app-layout>
+
+        <!-- Categories -->
+        <h2 class="section-title">Browse Categories</h2>
+        <div class="categories">
+            <a href="/category/laravel" class="category-tag">Laravel</a>
+            <a href="/category/php" class="category-tag">PHP</a>
+            <a href="/category/javascript" class="category-tag">JavaScript</a>
+            <a href="/category/vue" class="category-tag">Vue.js</a>
+            <a href="/category/tailwind" class="category-tag">Tailwind CSS</a>
+            <a href="/category/testing" class="category-tag">Testing</a>
+            <a href="/category/deployment" class="category-tag">Deployment</a>
+            <a href="/category/performance" class="category-tag">Performance</a>
+        </div>
+
+        <!-- Newsletter -->
+        <div class="newsletter">
+            <livewire:comments :model="$post" />
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>About LaraBlog</h3>
+                    <p>A blog dedicated to Laravel, PHP, and modern web development practices. We share tutorials, tips,
+                        and industry insights.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-github"></i></a>
+                        <a href="#"><i class="fab fa-linkedin"></i></a>
+                    </div>
+                </div>
+                <div class="footer-column">
+                    <h3>Quick Links</h3>
+                    <ul class="footer-links">
+                        <li><a href="/">Home</a></li>
+                        <li><a href="/blog">Blog</a></li>
+                        <li><a href="/about">About Us</a></li>
+                        <li><a href="/contact">Contact</a></li>
+                        <li><a href="/privacy">Privacy Policy</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Categories</h3>
+                    <ul class="footer-links">
+                        <li><a href="/category/laravel">Laravel</a></li>
+                        <li><a href="/category/php">PHP</a></li>
+                        <li><a href="/category/javascript">JavaScript</a></li>
+                        <li><a href="/category/vue">Vue.js</a></li>
+                        <li><a href="/category/testing">Testing</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2023 LaraBlog. All rights reserved. Built with Laravel.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+
+</html>

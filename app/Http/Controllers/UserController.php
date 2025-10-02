@@ -2,10 +2,25 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Post;
 use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
+    public function showFullPost(int $id)
+    {
+        $post = Post::findOrFail($id);
+
+        return view('fullpost', compact('post'));
+    }
+
+    public function showDataInHome()
+    {
+        $posts = Post::all();
+
+        return view('home', compact('posts'));
+    }
+
     public function home(Request $request)
     {
         if ($request->user()->usertype == 'user') {
@@ -22,15 +37,5 @@ class UserController extends Controller
         } else {
             return redirect()->route('dashboard');
         }
-    }
-
-    public function post()
-    {
-        return view('admin.post');
-    }
-
-    public function createpost()
-    {
-        return view('admin.createpost');
     }
 }
